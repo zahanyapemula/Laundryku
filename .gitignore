@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+build/
+
+# Environment & kredensial lokal
+.env
+.env.local
+.env.*.local
+
+# Log
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Berkas pengujian sementara
+smoke.mjs
+shots.mjs
+shots/
+linkcheck.mjs
+blank.mjs
+regress.mjs
+chk.mjs
+dlg.mjs
+t.mjs
+
+# Editor & OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
