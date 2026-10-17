@@ -5,6 +5,7 @@ import {
   Check,
   ChevronDown,
   ClipboardList,
+  CloudOff,
   CreditCard,
   Home,
   Info,
@@ -408,6 +409,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {!user && <OfflineBar />}
+      {user && <OfflineBar />}
       {/* Sidebar desktop */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 border-r border-slate-200 lg:block">
         <SidebarContent />
@@ -468,9 +471,28 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
           {children}
         </main>
-      </div>
+      </div>      <ToastHost />
+    </div>
+  )
+}
 
-      <ToastHost />
+function OfflineBar() {
+  const { apiOnline } = useStore()
+  if (apiOnline) return null
+  return (
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 sm:py-3">
+      <div className="flex items-center gap-3 rounded-lg border border-warning bg-warning-light px-4 py-3 text-sm">
+        <CloudOff size={18} className="text-warning-dark" />
+        <p className="flex-1 font-semibold text-slate-700">
+          Koneksi ke database tidak aktif — aplikasi berjalan dari penyimpanan lokal browser.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="shrink-0 rounded-md bg-warning-dark px-3 py-1 text-xs font-bold text-white transition-colors hover:bg-amber-700"
+        >
+          Muat Ulang
+        </button>
+      </div>
     </div>
   )
 }

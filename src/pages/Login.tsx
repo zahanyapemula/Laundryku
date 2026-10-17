@@ -28,15 +28,46 @@ const DEMO: { role: Role; email: string }[] = [
   { role: 'courier', email: 'courier@laundry.com' },
 ]
 
+function getSavedRole(): Role {
+  if (typeof window === 'undefined') return 'customer'
+  try {
+    const saved = window.localStorage.getItem('laundryku.login.role')
+    if (saved === 'customer' || saved === 'admin' || saved === 'courier') return saved
+  } catch {
+    // ignore storage errors
+  }
+  return 'customer'
+}
+
 export default function Login() {
   const { user, login, pushToast, showDialog } = useStore()
   const navigate = useNavigate()
-  const [role, setRole] = useState<Role>('customer')
+  const [role, setRole] = useState<Role>(getSavedRole)
   const [email, setEmail] = useState('customer@laundry.com')
   const [password, setPassword] = useState('laundry123')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({})
+
+  const pickRole = (next: Role) => {
+    setRole(next)
+    try {
+      window.localStorage.setItem('laundryku.login.role', next)
+    } catch {
+      // ignore storage errors
+    }
+  }
+
+  const updateDemo = (nextRole: Role) => {
+    const demo = DEMO.find((d) => d.role === nextRole)
+    if (!demo) return
+    setRole(nextRole)
+    setEmail(demo.email)
+    setPassword('laundry123')
+    setShowPassword(false)
+    setError('')
+    setFieldErrors({})
+  }
 
   if (user) {
     return (
@@ -86,9 +117,7 @@ export default function Login() {
         </div>
 
         <div className="max-w-md">
-          <h2 className="text-3xl leading-tight font-extrabold">
-            Cuci rapi, antar tepat waktu.
-          </h2>
+          <h2 className="text-3xl leading-tight font-extrabold">Cuci rapi, antar tepat waktu.</h2>
           <p className="mt-4 text-primary-light">
             Satu sistem untuk pelanggan, admin/kasir, dan kurir. Pesanan, pembayaran,
             serta status laundry terhubung real-time dalam satu aplikasi.
@@ -126,9 +155,7 @@ export default function Login() {
           </div>
 
           <h1 className="text-2xl font-extrabold text-slate-800">Masuk ke Akun Anda</h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Pilih role lalu masuk menggunakan akun demo.
-          </p>
+          <p className="mt-1 text-sm text-slate-500">Pilih role lalu masuk menggunakan akun demo.</p>
 
           {/* Pilihan role */}
           <div className="mt-6 grid grid-cols-3 gap-2">
@@ -136,11 +163,17 @@ export default function Login() {
               <button
                 key={r.id}
                 type="button"
+                data-role-chip={r.id}
                 onClick={() => {
-                  setRole(r.id)
+                  pickRole(r.id)
                   setError('')
+                  setFieldErrors({})
                   const demo = DEMO.find((d) => d.role === r.id)
-                  if (demo) setEmail(demo.email)
+                  if (demo) {
+                    setEmail(demo.email)
+                    setPassword('laundry123')
+                    setShowPassword(false)
+                  }
                 }}
                 className={`flex flex-col items-center gap-1.5 rounded-xl border-2 px-2 py-3 text-center transition-all ${
                   role === r.id
@@ -155,7 +188,7 @@ export default function Login() {
             ))}
           </div>
 
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
             <label className="block">
               <span className="mb-1.5 block text-sm font-semibold text-slate-700">
                 Email / Username
@@ -175,9 +208,7 @@ export default function Login() {
                 />
               </div>
               {fieldErrors.email && (
-                <span className="mt-1 block text-xs font-medium text-danger">
-                  {fieldErrors.email}
-                </span>
+                <span className="mt-1 block text-xs font-medium text-danger">{fieldErrors.email}</span>
               )}
             </label>
 
@@ -208,9 +239,7 @@ export default function Login() {
                 </button>
               </div>
               {fieldErrors.password && (
-                <span className="mt-1 block text-xs font-medium text-danger">
-                  {fieldErrors.password}
-                </span>
+                <span className="mt-1 block text-xs font-medium text-danger">{fieldErrors.password}</span>
               )}
             </label>
 
@@ -236,12 +265,8 @@ export default function Login() {
                 <button
                   key={d.role}
                   type="button"
-                  onClick={() => {
-                    setRole(d.role)
-                    setEmail(d.email)
-                    setPassword('laundry123')
-                    setError('')
-                  }}
+                  data-demo-role={d.role}
+                  onClick={() => updateDemo(d.role)}
                   className="flex w-full items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-left text-xs transition-colors hover:border-primary hover:bg-primary-light/40"
                 >
                   <span className="font-semibold text-slate-700">

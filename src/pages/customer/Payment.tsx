@@ -360,7 +360,7 @@ export default function Payment() {
 
       <div className="flex flex-wrap items-center justify-center gap-2">
         <p className="text-xs text-slate-400">
-          Halaman pembayaran ini merupakan simulasi prototipe — tidak ada transaksi nyata.
+          Halaman pembayaran ini merupakan simulasi prototipe — tidak ada gateway pembayaran nyata dan tidak ada transaksi keuangan.
         </p>
         <Badge tone="slate">{order.id}</Badge>
       </div>
