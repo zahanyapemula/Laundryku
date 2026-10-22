@@ -173,6 +173,12 @@ src/
    └─ courier/          # 2 halaman kurir
 ```
 
+
+gambar web 
+
+<img width="1911" height="920" alt="image" src="https://github.com/user-attachments/assets/4e783c39-90d0-4a09-9f14-c4d96991e3bb" />
+<img width="1910" height="924" alt="Screenshot 2026-10-23 021305" src="https://github.com/user-attachments/assets/e07927bf-f1e0-407c-88ca-a3b2e6470226" />
+
 ## Catatan
 
 - Seluruh antarmuka berbahasa Indonesia.
